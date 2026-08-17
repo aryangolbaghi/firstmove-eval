@@ -1,0 +1,2 @@
+{"schema_version":1,"id":"starting-position","input":{"fen":"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1","variant":"standard"},"reference":{"move":"e4","source_line":["e4"]},"metadata":{"source":"example","split":"test"}}
+

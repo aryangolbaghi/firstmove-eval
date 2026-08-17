@@ -1,0 +1,29 @@
+schema_version: 1
+run:
+  output_dir: ../runs
+  seed: 0
+dataset:
+  path: positions.jsonl
+task:
+  kind: chess_first_move
+  prompt_version: chess-uci-v1
+model:
+  kind: openai_chat
+  base_url: https://api.openai.com/v1
+  api_key_env: OPENAI_API_KEY
+  model: model-name
+  batch_size: 16
+  max_concurrency: 16
+  timeout_seconds: 60
+  max_attempts: 3
+  parameters:
+    temperature: 0
+    max_tokens: 32
+metrics:
+  reference: true
+  engine:
+    enabled: false
+artifacts:
+  store_prompts: true
+  store_raw_responses: true
+

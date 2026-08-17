@@ -1,0 +1,23 @@
+schema_version: 1
+run:
+  output_dir: ../runs
+  seed: 0
+dataset:
+  path: positions.jsonl
+task:
+  kind: chess_first_move
+  prompt_version: chess-uci-v1
+model:
+  kind: mock
+  batch_size: 16
+  responses:
+    starting-position: e2e4
+  default_response: e2e4
+metrics:
+  reference: true
+  engine:
+    enabled: false
+artifacts:
+  store_prompts: true
+  store_raw_responses: true
+

@@ -1,0 +1,88 @@
+[build-system]
+requires = ["hatchling>=1.27"]
+build-backend = "hatchling.build"
+
+[project]
+name = "firstmove-eval"
+version = "1.0.0"
+description = "Auditable first-move evaluation for standard chess positions"
+readme = "README.md"
+requires-python = ">=3.13"
+license = "GPL-3.0-or-later"
+authors = [{ name = "FirstMove Eval contributors" }]
+keywords = ["chess", "evaluation", "llm", "stockfish"]
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+  "Environment :: Console",
+  "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.13",
+  "Typing :: Typed",
+]
+dependencies = [
+  "chess>=1.11,<2",
+  "httpx>=0.28,<1",
+  "pydantic>=2.10,<3",
+  "PyYAML>=6.0.2,<7",
+  "typer>=0.15,<1",
+]
+
+[project.urls]
+Homepage = "https://github.com/youngaryan/firstmove-eval"
+Documentation = "https://github.com/youngaryan/firstmove-eval#readme"
+Repository = "https://github.com/youngaryan/firstmove-eval"
+Issues = "https://github.com/youngaryan/firstmove-eval/issues"
+Changelog = "https://github.com/youngaryan/firstmove-eval/blob/main/CHANGELOG.md"
+
+[project.optional-dependencies]
+dev = [
+  "build>=1.2,<2",
+  "hypothesis>=6.130,<7",
+  "mypy>=1.15,<2",
+  "pip-audit>=2.8,<3",
+  "pip-licenses>=5.0,<6",
+  "psutil>=7.0,<8",
+  "pytest>=9.0.3,<10",
+  "pytest-asyncio>=0.25,<2",
+  "ruff>=0.11,<1",
+  "twine>=6.1,<7",
+]
+
+[project.scripts]
+firstmove-eval = "firstmove_eval.cli:app"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/firstmove_eval"]
+core-metadata-version = "2.4"
+
+[tool.hatch.build.targets.sdist]
+core-metadata-version = "2.4"
+
+[tool.pytest.ini_options]
+addopts = "-ra --strict-config --strict-markers"
+testpaths = ["tests"]
+asyncio_mode = "auto"
+markers = [
+  "stockfish: requires a local Stockfish executable",
+]
+
+[tool.ruff]
+target-version = "py313"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "SIM", "RUF", "ASYNC"]
+
+[tool.ruff.format]
+quote-style = "double"
+
+[tool.mypy]
+python_version = "3.13"
+strict = true
+warn_unreachable = true
+plugins = ["pydantic.mypy"]
+packages = ["firstmove_eval"]
+
+[[tool.mypy.overrides]]
+module = ["yaml", "chess", "chess.engine"]
+ignore_missing_imports = true
