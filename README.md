@@ -60,6 +60,11 @@ For an OpenAI-compatible Chat Completions server, start from
 `POST /chat/completions` request per example with bounded concurrency. Transient retries are
 limited, but a retry after an ambiguous timeout can result in another provider charge.
 
+For a complete, cross-platform setup using either OpenAI or a local Ollama model together
+with Stockfish, follow the [real-model and Stockfish runbook](docs/real-model-stockfish.md).
+It includes install commands, provider-safe credential handling, tested configuration
+templates, validation, execution, and artifact inspection.
+
 ## Result semantics
 
 Successful but unparseable or illegal model answers count as incorrect in reference and

@@ -1,0 +1,36 @@
+# Copy this file and replace the Stockfish path before running it.
+# See docs/real-model-stockfish.md for cross-platform setup and API-key handling.
+schema_version: 1
+run:
+  output_dir: ../runs
+  seed: 0
+dataset:
+  path: positions.jsonl
+task:
+  kind: chess_first_move
+  prompt_version: chess-uci-v1
+model:
+  kind: openai_chat
+  base_url: https://api.openai.com/v1
+  api_key_env: OPENAI_API_KEY
+  # A dated snapshot avoids an unannounced model change between benchmark runs.
+  model: gpt-4o-mini-2024-07-18
+  batch_size: 4
+  max_concurrency: 4
+  timeout_seconds: 60
+  max_attempts: 3
+  parameters:
+    temperature: 0
+    max_tokens: 32
+metrics:
+  reference: true
+  engine:
+    enabled: true
+    path: /ABSOLUTE/PATH/TO/stockfish
+    nodes: 100000
+    threads: 1
+    hash_mb: 128
+    timeout_seconds: 60
+artifacts:
+  store_prompts: true
+  store_raw_responses: true
