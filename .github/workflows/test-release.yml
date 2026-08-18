@@ -21,7 +21,7 @@ jobs:
       - run: uv run pip-audit
       - run: uv build
       - run: uv run twine check dist/*
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: test-release-distributions
           path: dist/
@@ -35,7 +35,7 @@ jobs:
       id-token: write
       contents: read
     steps:
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           name: test-release-distributions
           path: dist/
@@ -43,3 +43,4 @@ jobs:
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           repository-url: https://test.pypi.org/legacy/
+          skip-existing: true
