@@ -65,6 +65,14 @@ with Stockfish, follow the [real-model and Stockfish runbook](docs/real-model-st
 It includes install commands, provider-safe credential handling, tested configuration
 templates, validation, execution, and artifact inspection.
 
+## Development testing
+
+The repository separates fast unit feedback, deterministic offline integration coverage, and
+repeatable config-driven performance benchmarks. Built-in and installed third-party benchmark
+plugins use the same isolated runner. See
+[testing and benchmarks](docs/testing-and-benchmarks.md) for configuration, plugin authoring,
+measured scenarios, and the same-machine baseline regression workflow.
+
 ## Result semantics
 
 Successful but unparseable or illegal model answers count as incorrect in reference and

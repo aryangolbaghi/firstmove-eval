@@ -1,0 +1,22 @@
+schema_version: 1
+name: quick-config
+
+run:
+  output: ../benchmark-results/quick-config.json
+  max_slowdown_percent: 20
+
+benchmarks:
+  - plugin: hot_path
+    work_items: 5000
+    repetitions: 3
+
+  - plugin: preflight
+    work_items: 1000
+    repetitions: 3
+    max_peak_rss_mib: 128
+
+  - plugin: offline_run
+    work_items: 250
+    repetitions: 2
+    options:
+      batch_size: 128
