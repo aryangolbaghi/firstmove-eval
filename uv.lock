@@ -347,6 +347,9 @@ dependencies = [
 ]
 
 [package.optional-dependencies]
+benchmark = [
+    { name = "psutil" },
+]
 dev = [
     { name = "build" },
     { name = "hypothesis" },
@@ -369,6 +372,7 @@ requires-dist = [
     { name = "mypy", marker = "extra == 'dev'", specifier = ">=1.15,<2" },
     { name = "pip-audit", marker = "extra == 'dev'", specifier = ">=2.8,<3" },
     { name = "pip-licenses", marker = "extra == 'dev'", specifier = ">=5.0,<6" },
+    { name = "psutil", marker = "extra == 'benchmark'", specifier = ">=7.0,<8" },
     { name = "psutil", marker = "extra == 'dev'", specifier = ">=7.0,<8" },
     { name = "pydantic", specifier = ">=2.10,<3" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=9.0.3,<10" },
@@ -378,7 +382,7 @@ requires-dist = [
     { name = "twine", marker = "extra == 'dev'", specifier = ">=6.1,<7" },
     { name = "typer", specifier = ">=0.15,<1" },
 ]
-provides-extras = ["dev"]
+provides-extras = ["benchmark", "dev"]
 
 [[package]]
 name = "h11"

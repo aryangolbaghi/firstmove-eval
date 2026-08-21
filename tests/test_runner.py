@@ -5,13 +5,14 @@ import json
 from collections.abc import Sequence
 from pathlib import Path
 
+import chess
 import pytest
 from typer.testing import CliRunner
 
 import firstmove_eval.runner as runner_module
 from firstmove_eval.adapters.base import ModelAdapter
 from firstmove_eval.cli import app
-from firstmove_eval.config import ArtifactSettings
+from firstmove_eval.config import ArtifactSettings, MockModelSettings
 from firstmove_eval.models import (
     ChatMessage,
     GenerationError,
@@ -22,6 +23,8 @@ from firstmove_eval.models import (
 from firstmove_eval.runner import _correlate_outcomes, _run_async, run, validate
 
 from .conftest import source_row, write_rows
+
+pytestmark = pytest.mark.integration
 
 
 def read_json(path: Path) -> dict[str, object]:
@@ -55,6 +58,66 @@ def test_validate_and_complete_mock_run(mock_config: object) -> None:
     manifest_text = (report.output_dir / "manifest.json").read_text(encoding="utf-8")
     assert "status" in manifest_text
     assert "prompt_template_hash" in manifest_text
+
+
+def test_realistic_position_matrix_preserves_end_to_end_metric_semantics(
+    mock_config: object,
+) -> None:
+    def fen_after(*moves: str) -> str:
+        board = chess.Board()
+        for move in moves:
+            board.push_san(move)
+        return board.fen(en_passant="fen")
+
+    config = mock_config
+    rows = [
+        source_row(example_id="exact-uci", fen=fen_after(), reference="e4"),
+        source_row(example_id="legal-san", fen=fen_after("e4"), reference="c5"),
+        source_row(example_id="legal-wrong", fen=fen_after("d4"), reference="d5"),
+        source_row(
+            example_id="invalid-response",
+            fen=fen_after("e4", "c5", "Nf3"),
+            reference="d6",
+        ),
+    ]
+    write_rows(config.dataset.path, rows)  # type: ignore[attr-defined]
+    config = config.model_copy(  # type: ignore[attr-defined]
+        update={
+            "model": MockModelSettings(
+                batch_size=2,
+                responses={
+                    "exact-uci": "e2e4",
+                    "legal-san": "c5",
+                    "legal-wrong": "g8f6",
+                    "invalid-response": "I would develop a piece.",
+                },
+            )
+        }
+    )
+
+    report = run(config)
+    assert report.status == "complete"
+    assert report.processed_examples == 4
+    summary = read_json(report.output_dir / "summary.json")
+    metrics = summary["metrics"]
+    assert isinstance(metrics, dict)
+    expected_rates = {
+        "response_format_compliance": 0.5,
+        "move_parse_success": 0.75,
+        "legal_move_rate": 0.75,
+        "reference_move_accuracy": 0.5,
+    }
+    assert {name: metrics[name]["rate"] for name in expected_rates} == expected_rates  # type: ignore[index]
+
+    examples = {
+        example["example_id"]: example
+        for example in read_jsonl(report.output_dir / "examples.jsonl")
+    }
+    assert examples["legal-san"]["interpretation"]["notation"] == "san"  # type: ignore[index]
+    assert examples["legal-wrong"]["interpretation"]["legal"] is True  # type: ignore[index]
+    assert examples["invalid-response"]["interpretation"]["diagnostic"] == (  # type: ignore[index]
+        "invalid_or_ambiguous_move"
+    )
 
 
 def test_invalid_dataset_never_builds_model_adapter(

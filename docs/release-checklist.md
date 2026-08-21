@@ -1,7 +1,8 @@
 # Release checklist
 
 1. Reconfirm ownership and availability of the `firstmove-eval` PyPI project.
-2. Run formatting, lint, strict typing, unit/contract tests, and the 100,000-row benchmark.
+2. Run formatting, lint, strict typing, unit/integration tests, and
+   `uv run firstmove-benchmark --profile scale --output benchmark-results/scale.json`.
 3. Run the opt-in real Stockfish test with a pinned official binary and record its digest.
 4. Build both wheel and source distribution; run `twine check` and inspect their file lists.
 5. Install the wheel in a clean Python 3.13 environment and run the documented mock example.
@@ -10,4 +11,3 @@
 8. Publish to TestPyPI and repeat the clean-install smoke test.
 9. Approve the protected `pypi` GitHub environment to publish through OIDC trusted publishing.
 10. Verify provenance, wheel, sdist, license, console entry point, and README on PyPI.
-

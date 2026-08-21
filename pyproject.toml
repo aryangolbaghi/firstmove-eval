@@ -35,6 +35,9 @@ Issues = "https://github.com/youngaryan/firstmove-eval/issues"
 Changelog = "https://github.com/youngaryan/firstmove-eval/blob/main/CHANGELOG.md"
 
 [project.optional-dependencies]
+benchmark = [
+  "psutil>=7.0,<8",
+]
 dev = [
   "build>=1.2,<2",
   "hypothesis>=6.130,<7",
@@ -50,9 +53,10 @@ dev = [
 
 [project.scripts]
 firstmove-eval = "firstmove_eval.cli:app"
+firstmove-benchmark = "benchmarks.suite:main"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/firstmove_eval"]
+packages = ["src/firstmove_eval", "benchmarks"]
 core-metadata-version = "2.4"
 
 [tool.hatch.build.targets.sdist]
@@ -63,6 +67,7 @@ addopts = "-ra --strict-config --strict-markers"
 testpaths = ["tests"]
 asyncio_mode = "auto"
 markers = [
+  "integration: deterministic tests that cross component, filesystem, or HTTP boundaries",
   "stockfish: requires a local Stockfish executable",
 ]
 
